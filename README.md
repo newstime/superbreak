@@ -1,10 +1,10 @@
-# superfreak
+# Superbreak
 
-Breaks paragraphs into lines. Super freaky.
+Breaks paragraphs into lines.
 
 ## Installation
 
-    $ gem install superfreak
+    $ gem install superbreak
 
 ## Contributing
 
