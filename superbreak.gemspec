@@ -24,5 +24,6 @@ Gem::Specification.new do |spec|
 
   #spec.add_runtime_dependency 'crawdad', '~> 0.1.0'
   spec.add_runtime_dependency 'nokogiri', '~> 1.6.0'
+  spec.add_runtime_dependency 'json', '~> 1.8.1'
 
 end

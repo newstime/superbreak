@@ -1,3 +1,6 @@
+require 'crawdad'
+require 'crawdad/html_tokenizer'
+
 class ParagraphLinePrinter
 
   def initialize(paragraph, column_width, font_profiles, options = {})
@@ -17,7 +20,7 @@ class ParagraphLinePrinter
     tolorence = options[:tolerence] || 10
     indent = options[:indent] || 40
 
-    stream = Crawdad::HtmlTokenizer.new(FontProfile2.get('minion')).paragraph(@text, :hyphenation => true, indent: indent)
+    stream = Crawdad::HtmlTokenizer.new(FontProfile2.get('minion', font_profiles_path: options[:font_profiles_path])).paragraph(@text, :hyphenation => true, indent: indent)
     para = Crawdad::Paragraph.new(stream, :width => width)
     @lines = para.lines(tolorence)
 

@@ -8,7 +8,7 @@ class LineStreamer
     @column_width = LinearMeasure.new("#{options[:width]}px" || "225px")
     #raise "Units must be provided in pixels." unless @column_width.units == "px"
 
-    @font_profile = options[:profile] || FontProfile.get('trykker')
+    @font_profile = options[:profile] || FontProfile.get('trykker', font_profiles_path: options[:font_profiles_path])
 
     @paragraph_line_printers = @paragraphs.map { |p| ParagraphLinePrinter.new(p, @column_width, @font_profile, options) }
 
