@@ -10,22 +10,22 @@ class ParagraphLinePrinter
 
     @text = @paragraph.text # Just text for now.
 
-    # Build stream
-    #@children = @paragraph.children
-    #@stream = make_stream(@children).flatten
-    #@stream_length = @stream.count
-
+    @index = 0
+    @classes = @paragraph['class'].to_s.split(' ')
+    @continued = @classes.include?('continued') # Indicates if paragraph has alreay been opened.
 
     width = options[:width] || 284
     tolorence = options[:tolerence] || 10
-    indent = options[:indent] || 40
+
+    if @continued
+      indent = 0
+    else
+      indent = options[:indent] || 40
+    end
 
     stream = Crawdad::HtmlTokenizer.new(FontProfile2.get('minion', font_profiles_path: options[:font_profiles_path])).paragraph(@text, :hyphenation => true, indent: indent)
     para = Crawdad::Paragraph.new(stream, :width => width)
     @lines = para.lines(tolorence)
-
-    @index = 0
-    @continued = false # Indicates if paragraph has alreay been opened.
   end
 
   def make_stream(children)
@@ -116,27 +116,7 @@ class ParagraphLinePrinter
     stringio.write("</span> ")
     @index += 1
     stringio.string
-
-    #@line ||= ColumnLine.new(@column_width, @font_profiles)
-    #while current = @stream[@index]
-      #case current
-      #when String
-        #if @line.add_character(current, next_character)
-          #@index += 1
-        #else
-          #return @line.flush
-        #end
-      #when Hash
-        #if current[:push]
-          #@line.push_element(current[:push][:tag_name], current[:push][:attributes])
-        #elsif current[:pop]
-          #@line.pop_element
-        #end
-        #@index += 1
-      #end
-    #end
   rescue => e
-    #debugger
     ""
   end
 

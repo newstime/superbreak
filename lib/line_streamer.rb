@@ -12,6 +12,8 @@ class LineStreamer
 
     @paragraph_line_printers = @paragraphs.map { |p| ParagraphLinePrinter.new(p, @column_width, @font_profile, options) }
 
+    #throw @paragraph_line_printers.map(&:nil?)  # For testing
+
     @current_paragraph_line_printer = @paragraph_line_printers.shift
   end
 
