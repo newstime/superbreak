@@ -11,10 +11,12 @@ class ParagraphLinePrinter
     @font_profiles = font_profiles
 
     @text = @paragraph.text # Just text for now.
+    @remaining_text = @text
 
     @index = 0
+    @character_index = 0
     @classes = @paragraph['class'].to_s.split(' ')
-    @continued = @classes.include?('continued') # Indicates if paragraph has alreay been opened.
+    @continued = @classes.include?('continued') # Indicates if paragraph has already been opened.
 
     width = options[:width] || 284
     tolorence = options[:tolerence] || 10
@@ -100,8 +102,7 @@ class ParagraphLinePrinter
     if @index == 0
       @paragraph.to_html
     else
-      text = "" # TODO: Resolve out remaining text
-      "<p class=\"continued\">#{text}</p>"
+      "<p class=\"continued\">#{@remaining_text}</p>"
     end
   end
 
@@ -117,8 +118,11 @@ class ParagraphLinePrinter
     tokens.each do |token|
       case token
       when Crawdad::Tokens::Box
+        @remaining_text.lstrip!
+        @remaining_text.sub!(/^#{token.content}/, '') # Strip word
         stringio.write(token.content)
       when Crawdad::Tokens::Glue
+        @remaining_text.lstrip!
         stringio.write(" ")
       end
     end
