@@ -95,6 +95,16 @@ class ParagraphLinePrinter
     @index >= @lines.count
   end
 
+  # Returns the remaining html
+  def remaining_html
+    if @index == 0
+      @paragraph.to_html
+    else
+      text = "" # TODO: Resolve out remaining text
+      "<p class=\"continued\">#{text}</p>"
+    end
+  end
+
   def get_next_line
     stringio = StringIO.new
 
