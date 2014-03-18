@@ -11,6 +11,10 @@ class ParagraphLinePrinter
     @font_profiles = font_profiles
 
     @text = @paragraph.text # Just text for now.
+
+    # HACK: Filter allowable characters, to avoid issue with unmapped characters
+    # for the moment.
+    @text = @text.tr('^A-Za-z0-9 \'\"', '')
     @remaining_text = @text
 
     @index = 0
