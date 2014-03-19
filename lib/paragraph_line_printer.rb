@@ -11,10 +11,6 @@ class ParagraphLinePrinter
     @font_profiles = font_profiles
 
     @text = @paragraph.text # Just text for now.
-
-    # HACK: Filter allowable characters, to avoid issue with unmapped characters
-    # for the moment.
-    @text = @text.tr('^A-Za-z0-9 \'\"', '')
     @remaining_text = @text
 
     @index = 0
@@ -97,6 +93,7 @@ class ParagraphLinePrinter
     lines.count
   end
 
+  # True if lines remain to be printed.
   def exhasusted?
     @index >= @lines.count
   end
@@ -111,19 +108,29 @@ class ParagraphLinePrinter
   end
 
   def get_next_line
+    return nil if exhasusted?
+
     stringio = StringIO.new
 
     tokens, breakpoint = @lines[@index]
+
     stringio.write("<span class=\"line\">")
 
     # skip over glue and penalties at the beginning of each line
+
     tokens.shift until Crawdad::Tokens::Box === tokens.first
 
     tokens.each do |token|
       case token
       when Crawdad::Tokens::Box
         @remaining_text.lstrip!
-        @remaining_text.sub!(/^#{token.content}/, '') # Strip word
+
+        # Need to force UTF encoding. Content coming out of Crawdad is ASCII
+        # 8-bit encoded, need to look into fixing this so we don't need to do
+        # the conversion here to avoid encoding exception in the sub.
+        utf_encoded_token_content = token.content.force_encoding(Encoding::UTF_8)
+        @remaining_text.sub!(/^#{utf_encoded_token_content}/, '') # Strip word
+
         stringio.write(token.content)
       when Crawdad::Tokens::Glue
         @remaining_text.lstrip!
@@ -137,8 +144,6 @@ class ParagraphLinePrinter
     stringio.write("</span> ")
     @index += 1
     stringio.string
-  rescue => e
-    ""
   end
 
 end
