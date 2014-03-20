@@ -129,7 +129,7 @@ class ParagraphLinePrinter
         # 8-bit encoded, need to look into fixing this so we don't need to do
         # the conversion here to avoid encoding exception in the sub.
         utf_encoded_token_content = token.content.force_encoding(Encoding::UTF_8)
-        @remaining_text.sub!(/^#{utf_encoded_token_content}/, '') # Strip word
+        @remaining_text.sub!(/^#{Regexp.quote(utf_encoded_token_content)}/, '') # Strip word
 
         stringio.write(token.content)
       when Crawdad::Tokens::Glue
